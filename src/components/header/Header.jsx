@@ -6,7 +6,7 @@ import { logout } from "../../features/auth/authSlice";
 const Header = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
-  
+
   const onLogout = (e) => {
     e.preventDefault();
     dispatch(logout());
@@ -18,7 +18,6 @@ const Header = () => {
           <>
             <span onClick={onLogout}>Logout</span>
             <span>
-              {/* CAAMBIA LA RUTA, ESTA ERA LA DE HOME :) */}
               <Link to="/profile">{user.name}</Link>
             </span>
           </>
