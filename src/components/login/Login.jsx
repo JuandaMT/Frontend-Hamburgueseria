@@ -1,16 +1,29 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { login } from "../../features/auth/authSlice";
+import { login, reset } from "../../features/auth/authSlice";
+import { notification } from "antd";
 
 const Login = () => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
   const { email, password } = formData;
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { message, isSuccess, isError, user } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (isSuccess) {
+      notification.success({ message: message });
+      navigate("/profile");
+    }
+    if (isError) {
+      notification.error({ message: message });
+    }
+    dispatch(reset());
+  }, [message, isSuccess, isError, user]); 
 
   const onChange = (e) => {
     setFormData((prevState) => ({
@@ -18,16 +31,19 @@ const Login = () => {
       [e.target.name]: e.target.value,
     }));
   };
-
   const onSubmit = (e) => {
     e.preventDefault();
-    console.log("formData", formData)
     dispatch(login(formData));
-    /* navigate("/"); */
   };
+
   return (
     <form onSubmit={onSubmit}>
-      <input type="email" name="email" value={email} onChange={onChange} />
+      <input
+        type="email"
+        name="email"
+        value={email}
+        onChange={onChange}
+      />
       <input
         type="password"
         name="password"
